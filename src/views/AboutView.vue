@@ -1,5 +1,19 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="aboutContainer">
+    <h1 class="aboutContent">
+      This company provides products in the forms of either projects or
+      properties. However, we are open to expanding to alternatives.
+    </h1>
   </div>
 </template>
+
+<style>
+.aboutContent {
+  width: 50%;
+}
+
+.aboutContainer {
+  display: flex;
+  justify-content: center;
+}
+</style>
