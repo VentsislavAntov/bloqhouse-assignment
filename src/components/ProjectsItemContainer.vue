@@ -73,12 +73,10 @@ export default {
           );
         });
       }
-      if (this.$props.filters.secondarySelection === true) {
-        if (this.$props.filters.secondarySelection === true) {
-          result = result.filter((property) => {
-            return property.availableSlots > 0;
-          });
-        }
+      if (this.$props.filters.secondarySelection !== true) {
+        result = result.filter((property) => {
+          return property.availableSlots > 0;
+        });
       }
       return result;
     },

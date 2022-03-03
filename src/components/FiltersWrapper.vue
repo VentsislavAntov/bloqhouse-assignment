@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div v-if="this.data !== undefined" class="container">
     <div class="leftColumn">
       <div class="title">{{ title }}</div>
       <ul>
@@ -31,7 +31,6 @@
         </li>
       </ul>
     </div>
-
     <div class="rightColumn">
       <PropertiesItemContainer
         v-bind:filters="filters"
@@ -67,9 +66,7 @@ export default {
   methods: {
     filterDataFirstCriteria() {
       return new Set(
-        this.$props.data.properties.map(
-          (object) => object[this.$props.filterCriteria]
-        )
+        this.data.properties.map((object) => object[this.$props.filterCriteria])
       );
     },
   },

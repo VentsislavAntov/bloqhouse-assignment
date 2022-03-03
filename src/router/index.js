@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import PropertiesView from "../views/clientA/PropertiesView.vue";
 import PropertiesCheckoutView from "../views/clientA/PropertiesCheckoutView.vue";
 import ProjectsView from "../views/clientB/ProjectsView.vue";
+import AboutView from "../views/AboutView.vue";
+
 import ProjectsCheckoutView from "../views/clientB/ProjectsCheckoutView.vue";
 import NotFound from "../views/NotFound.vue";
 import HomeView from "../views/HomeView.vue";
@@ -28,6 +30,11 @@ const routes = [
     path: "/projects",
     name: "Projects",
     component: ProjectsView,
+  },
+  {
+    path: "/about",
+    name: "About",
+    component: AboutView,
   },
   {
     path: "/properties/checkout/:id",

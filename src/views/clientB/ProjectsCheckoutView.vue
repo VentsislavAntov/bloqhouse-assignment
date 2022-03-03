@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import data from "../../components/data/dbB";
 import CheckoutWrapper from "../../components/CheckoutWrapper.vue";
 
 export default {
@@ -13,8 +12,11 @@ export default {
   },
   data() {
     return {
-      data: data,
+      data: "",
     };
+  },
+  mounted() {
+    this.data = this.$store.getters.getDbb;
   },
 };
 </script>

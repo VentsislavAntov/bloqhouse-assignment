@@ -83,16 +83,13 @@ export default {
         });
       }
       if (this.$props.filters.secondarySelection === true) {
-        if (this.$props.filters.secondarySelection === true) {
-          console.log("in second if2");
-          result = result.filter((property) => {
-            return (
-              property.availableShares *
-                (property.totalValue / property.totalShares) >
-              0
-            );
-          });
-        }
+        result = result.filter((property) => {
+          return (
+            property.availableShares *
+              (property.totalValue / property.totalShares) >
+            0
+          );
+        });
       }
       return result;
     },
@@ -112,12 +109,13 @@ export default {
   display: flex;
   flex-shrink: 0;
   flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: left;
 }
 
 .propertyListItem {
   list-style-type: none;
-  width: 30%;
+  width: 33.3%;
+  text-align: -webkit-center;
 }
 .wrapper {
   width: 320px;

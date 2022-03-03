@@ -1,17 +1,17 @@
 <template>
   <FiltersWrapper
+    v-if="this.data !== undefined && this.data !== ''"
+    v-bind:data="this.data"
     title="Locations"
     filterCriteria="location"
     secondTitle="Availability"
     secondFilterCriteria="availability"
-    secondFilterItemTitle="Show available only"
-    v-bind:data="data"
+    secondFilterItemTitle="Show available
+  only"
   />
 </template>
 
 <script>
-import data from "../../components/data/dbA";
-
 import FiltersWrapper from "../../components/FiltersWrapper.vue";
 
 export default {
@@ -21,8 +21,11 @@ export default {
   },
   data() {
     return {
-      data: data,
+      data: "",
     };
+  },
+  mounted() {
+    this.data = this.$store.getters.getDba;
   },
 };
 </script>

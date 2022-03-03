@@ -1,16 +1,20 @@
 <template>
-  <div class="checkoutWrapper">
+  <div v-if="this.foundProperty !== undefined" class="checkoutWrapper">
     <div class="containerPropertiesCheckout">
       <div class="columnLeftPropertiesCheckout">
         <div class="boxComponentPropertiesCheckout">
           <img
             v-if="this.$props.view === 'shares'"
             class="image fillImage"
-            :src="filteredProperty.img"
+            :src="foundProperty.img"
           />
           <ProjectDescription
-            v-if="this.$props.view === 'slots'"
-            v-bind:description="filteredProperty.description"
+            v-if="
+              this.$props.view === 'slots' &&
+              this.foundProperty !== undefined &&
+              this.foundProperty !== ''
+            "
+            v-bind:description="foundProperty.description"
           />
         </div>
       </div>
@@ -25,31 +29,16 @@
             <div
               class="columnRightDetailsTopPropertiesCheckout textPropertiesCheckout"
             >
-              {{ filteredProperty.name }}
+              {{ foundProperty.name }}
             </div>
           </div>
           <div class="middleAreaTextPropertiesCheckout textPropertiesCheckout">
-            {{
-              this.$props.view === "shares"
-                ? "available shares:"
-                : "available slots:"
-            }}
-            {{
-              this.$props.view === "shares"
-                ? filteredProperty.availableShares
-                : filteredProperty.availableSlots
-            }}
+            {{ this.firstTitle }}
+            {{ this.availableSharesFunc() }}
           </div>
           <div class="middleAreaTextPropertiesCheckout textPropertiesCheckout">
-            {{
-              this.$props.view === "shares" ? "price per share:" : "slot size:"
-            }}
-
-            {{
-              this.$props.view === "shares"
-                ? filteredProperty.totalValue / filteredProperty.totalShares
-                : filteredProperty.projectGoal / filteredProperty.totalSlots
-            }}&#8364;
+            {{ this.secondTitle }}
+            {{ this.secondNumber }}&#8364;
           </div>
           <div class="inputContainerPropertiesCheckout">
             <input
@@ -59,30 +48,24 @@
             />
             <span class="middleSpanPropertiesCheckout">=</span>
             <span class="endSpanPropertiesCheckout">
-              {{
-                this.$props.view === "shares"
-                  ? (
-                      (filteredProperty.totalValue * this.toInvest) /
-                      filteredProperty.totalShares
-                    ).toLocaleString("en-US")
-                  : (
-                      (filteredProperty.projectGoal * this.toInvest) /
-                      filteredProperty.totalSlots
-                    ).toLocaleString("en-US")
-              }}
-              &#8364;</span
+              {{ currentSelectionEuros }}&#8364;</span
             >
           </div>
 
           <div class="buttonWrapPropertiesCheckout">
-            <!--  :class="'buttonCheckoutPropertiesCheckout' + checkShouldBeHidden" -->
-            <button
-              v-on:click="updateData()"
-              class="buttonCheckoutPropertiesCheckout"
-              :class="+tooMuchInvestingChecker ? 'disabled' : ''"
+            <router-link
+              :to="{
+                name: backButtonRoute,
+              }"
             >
-              {{ this.$props.view === "shares" ? " Invest" : "Fund" }}
-            </button>
+              <button
+                v-on:click="updateData()"
+                class="buttonCheckoutPropertiesCheckout"
+                :class="+isInvestedInputInvalid ? 'disabled' : ''"
+              >
+                {{ buttonText }}
+              </button>
+            </router-link>
           </div>
         </div>
       </div>
@@ -104,26 +87,73 @@ import ProjectDescription from "./ProjectDescription.vue";
 
 export default {
   name: "CheckoutWrapper",
-  props: ["id", "data", "view"],
+  props: ["id", "view"],
   components: { ProjectDescription },
 
-  methods: {},
-  computed: {
-    filteredProperty() {
-      const idLocal = this.$route.params.id;
-      const found = this.properties.find((x) => x.id === parseInt(idLocal));
-      return found;
+  methods: {
+    updateData() {
+      if (this.$props.view === "shares") {
+        const payload = {
+          passedId: this.$route.params.id,
+          newAmount: this.toInvest,
+        };
+        this.$store.commit("setDba", payload);
+      }
+      if (this.$props.view === "slots") {
+        const payload = {
+          passedId: this.$route.params.id,
+          newAmount: this.toInvest,
+        };
+        this.$store.commit("setDbb", payload);
+      }
     },
-    // checkShouldBeHidden(){
-    //     const total = this.$props.view === "shares" ? "Shares to buy" : "Slots to fund",
-    // },
-    tooMuchInvestingChecker() {
-      const idLocal = this.$route.params.id;
-      const found = this.properties.find((x) => x.id === parseInt(idLocal));
+    availableSharesFunc() {
+      if (this.$props.view === "shares") {
+        return this.foundProperty.availableShares?.toLocaleString("en-US");
+      }
+      if (this.$props.view === "slots") {
+        return this.foundProperty.availableSlots?.toLocaleString("en-US");
+      }
+    },
+  },
+
+  computed: {
+    currentSelectionEuros() {
+      if (!this.toInvest) {
+        return 0;
+      }
+      if (this.$props.view === "shares") {
+        console.log(
+          "this.foundProperty.totalValue",
+          this.foundProperty.totalValue
+        );
+        console.log(
+          "this.foundProperty.totalShares",
+          this.foundProperty.totalShares
+        );
+        console.log("this.toInvest", this.toInvest);
+        return (
+          (this.foundProperty.totalValue * this.toInvest) /
+          this.foundProperty.totalShares
+        ).toLocaleString("en-US");
+      }
+      if (this.$props.view === "slots") {
+        return (
+          (this.foundProperty.projectGoal * this.toInvest) /
+          this.foundProperty.totalSlots
+        ).toLocaleString("en-US");
+      }
+      return 0;
+    },
+    isInvestedInputInvalid() {
+      const found = this.foundProperty;
       const toInvestAmount =
         this.$props.view === "shares"
           ? (found.totalValue * this.toInvest) / found.totalShares
           : (found.projectGoal * this.toInvest) / found.totalSlots;
+      if (!toInvestAmount) {
+        return true;
+      }
       const availableFunds =
         this.$props.view === "shares"
           ? (found.availableShares * found.totalValue) / found.totalShares
@@ -133,13 +163,42 @@ export default {
   },
   data() {
     return {
-      properties: this.$props.data.properties,
+      foundProperty: "",
       toInvest: null,
-      buttonPlaceholder:
-        this.$props.view === "shares" ? "Shares to buy" : "Slots to fund",
-      backButtonRoute:
-        this.$props.view === "shares" ? "Properties" : "Projects",
+      buttonPlaceholder: "",
+      backButtonRoute: "",
+      firstTitle: "",
+      secondTitle: "",
+      secondNumber: "",
+      buttonText: "",
     };
+  },
+
+  mounted() {
+    if (this.$props.view === "shares") {
+      this.foundProperty = this.$store.getters.getDbaById(
+        this.$route.params.id
+      );
+      this.buttonPlaceholder = "Shares to buy";
+      this.backButtonRoute = "Properties";
+      this.firstTitle = "available shares:";
+      this.secondTitle = "price per share:";
+      this.secondNumber =
+        this.foundProperty.totalValue / this.foundProperty.totalShares;
+      this.buttonText = "Invest";
+    }
+    if (this.$props.view === "slots") {
+      this.foundProperty = this.$store.getters.getDbbById(
+        this.$route.params.id
+      );
+      this.buttonPlaceholder = "Slots to fund";
+      this.backButtonRoute = "Projects";
+      this.firstTitle = "available slots:";
+      this.secondTitle = "slot size:";
+      this.secondNumber =
+        this.foundProperty.projectGoal / this.foundProperty.totalSlots;
+      this.buttonText = "Fund";
+    }
   },
 };
 </script>
@@ -259,7 +318,7 @@ export default {
 
 .goBackButtonWrap {
   text-align: left;
-  padding-left: 5%;
+  padding-left: 6%;
 }
 
 .goBackButton {
