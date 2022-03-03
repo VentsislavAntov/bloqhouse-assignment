@@ -117,6 +117,7 @@ export default {
   width: 33.3%;
   text-align: -webkit-center;
 }
+
 .wrapper {
   width: 320px;
   height: 440px;
@@ -142,6 +143,7 @@ export default {
   font-weight: bold;
   text-align: center;
 }
+
 .cardItem {
   list-style-type: none;
   padding-bottom: 15px;

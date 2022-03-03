@@ -1,7 +1,7 @@
 <template>
   <div v-if="this.foundProperty !== undefined" class="checkoutWrapper">
     <div class="containerPropertiesCheckout">
-      <div class="columnLeftPropertiesCheckout">
+      <div class="columnPropertiesCheckout">
         <div class="boxComponentPropertiesCheckout">
           <img
             v-if="this.$props.view === 'shares'"
@@ -18,7 +18,7 @@
           />
         </div>
       </div>
-      <div class="columnRightPropertiesCheckout">
+      <div class="columnPropertiesCheckout">
         <div class="boxComponentPropertiesCheckout">
           <div class="containerDetailsTopPropertiesCheckout">
             <div
@@ -123,15 +123,6 @@ export default {
         return 0;
       }
       if (this.$props.view === "shares") {
-        console.log(
-          "this.foundProperty.totalValue",
-          this.foundProperty.totalValue
-        );
-        console.log(
-          "this.foundProperty.totalShares",
-          this.foundProperty.totalShares
-        );
-        console.log("this.toInvest", this.toInvest);
         return (
           (this.foundProperty.totalValue * this.toInvest) /
           this.foundProperty.totalShares
@@ -209,15 +200,7 @@ export default {
   flex-direction: row;
 }
 
-.columnLeftPropertiesCheckout {
-  width: 50%;
-  min-height: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.columnRightPropertiesCheckout {
+.columnPropertiesCheckout {
   width: 50%;
   min-height: 600px;
   display: flex;
@@ -253,7 +236,6 @@ export default {
   width: 50%;
   padding-top: 20px;
   padding-right: 40px;
-
   text-align: right;
 }
 
@@ -289,6 +271,7 @@ export default {
   text-align: center;
   font-size: 28px;
 }
+
 .middleSpanPropertiesCheckout {
   width: 33%;
   display: flex;
@@ -296,12 +279,14 @@ export default {
   align-items: center;
   font-size: 40px;
 }
+
 .endSpanPropertiesCheckout {
   width: 43%;
   display: flex;
   align-items: center;
   font-size: 30px;
 }
+
 .buttonCheckoutPropertiesCheckout {
   background-color: lightgreen;
   font-size: 14px;
@@ -322,13 +307,13 @@ export default {
 }
 
 .goBackButton {
-  width: 50%;
   font-size: 14px;
   width: 130px;
   height: 35px;
   cursor: pointer;
   bottom: 20px;
 }
+
 .checkoutWrapper {
   border-style: solid;
   padding: 5px;
@@ -338,7 +323,6 @@ export default {
 .disabled {
   cursor: not-allowed;
   pointer-events: none;
-  background-color: #ddd;
   background: #ddd;
   color: grey;
 }

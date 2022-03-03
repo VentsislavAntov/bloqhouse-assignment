@@ -8,8 +8,6 @@ import ProjectsCheckoutView from "../views/clientB/ProjectsCheckoutView.vue";
 import NotFound from "../views/NotFound.vue";
 import HomeView from "../views/HomeView.vue";
 
-// import FiltersView from "../components/FiltersView";
-
 const routes = [
   {
     path: "/",
@@ -21,11 +19,6 @@ const routes = [
     name: "Properties",
     component: PropertiesView,
   },
-  // {
-  //   path: "/properties",
-  //   name: "Filters",
-  //   component: FiltersView,
-  // },
   {
     path: "/projects",
     name: "Projects",
